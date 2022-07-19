@@ -11,7 +11,8 @@ public class Message {
 	private String postdate;
 	private String contents;
 	private int likes;
-	
+	private int ownerid;
+
 	@BasicConstructor
 	public Message() {
 		this.messageid = 0;
@@ -27,11 +28,12 @@ public class Message {
 		this.likes = 0;
 	}
 	
-	Message(int id, String date, String content, int likes) {
+	Message(int id, String date, String content, int likes, int userid) {
 		this.messageid = id;
 		this.postdate = date;
 		this.contents = content;
 		this.likes = likes;
+		this.ownerid = userid;
 	}
 	
 	public int getMessageid() {
@@ -65,6 +67,14 @@ public class Message {
 	public void setLikes(int likes) {
 		this.likes = likes;
 	}
+
+	public int getOwnerId() {
+		return ownerid;
+	}
+
+	public void setOwnerId(int ownerId) {
+		this.ownerid = ownerId;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -81,7 +91,7 @@ public class Message {
 		if (getClass() != obj.getClass())
 			return false;
 		Message other = (Message) obj;
-		return Objects.equals(postdate, other.postdate) && messageid == other.messageid && likes == other.likes && contents == other.contents;
+		return Objects.equals(postdate, other.postdate) && messageid == other.messageid && likes == other.likes && Objects.equals(contents, other.contents);
 	}
 
 	@Override

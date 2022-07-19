@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import dev.codenriver.annotations.*;
 import dev.codenriver.util.ConnectionUtil;
@@ -23,29 +24,25 @@ public class DAO <O> implements DataAccessObject<Object> {
 	
 	@Override
 	public void updateObject(String primaryKey, int pKeyIndex, Object obj, String table) throws SQLException {
-		
-		Connection conn = connUtil.openConnection();
-		
-		try { 			
-			Class<? extends Object> clasObj = obj.getClass();
+
+		try (Connection conn = connUtil.openConnection()) {
+			Class<?> clasObj = obj.getClass();
 			Field[] objFields = clasObj.getDeclaredFields();
-			
-			for (Field field: objFields) {
+
+			for (Field field : objFields) {
 				field.setAccessible(true);
 				if (field.getType().isPrimitive()) {
-					String sql = "update "+ table +" set "+ field.getName() +" = "+ field.get(obj) +" where "+ primaryKey +" = "+ pKeyIndex +";";
+					String sql = "update " + table + " set " + field.getName() + " = " + field.get(obj) + " where " + primaryKey + " = " + pKeyIndex + ";";
 					PreparedStatement state = conn.prepareStatement(sql);
 					state.executeUpdate();
 				} else {
-					String sql = "update "+ table +" set "+ field.getName() +" = '"+ field.get(obj)  +"' where "+ primaryKey +"="+ pKeyIndex +";";
+					String sql = "update " + table + " set " + field.getName() + " = '" + field.get(obj) + "' where " + primaryKey + "=" + pKeyIndex + ";";
 					PreparedStatement state = conn.prepareStatement(sql);
 					state.executeUpdate();
 				}
 			}
 		} catch (Exception e) {
 			logger.log(e.toString());
-		} finally {
-			conn.close();
 		}
 	}
 
@@ -53,75 +50,67 @@ public class DAO <O> implements DataAccessObject<Object> {
 	public void storeObject(Object obj, String table) throws SQLException {
 
 		String sql = "insert into " + table;
-		String columns = " (";
-		String values = "values (";
-		
-		Connection conn = connUtil.openConnection();
-		
-		try {
-			
+		StringBuilder columns = new StringBuilder(" (");
+		StringBuilder values = new StringBuilder("values (");
+
+		try (Connection conn = connUtil.openConnection()) {
+
 			conn.setAutoCommit(false);
-			
-			Class<? extends Object> classObj = obj.getClass();
+
+			Class<?> classObj = obj.getClass();
 			Field[] fields = classObj.getDeclaredFields();
 			int count = 0;
-			for (Field field: fields) {
+			for (Field field : fields) {
 				field.setAccessible(true);
 				count += 1;
 				if (count < fields.length) {
-					columns += field.getName() + ", ";
+					columns.append(field.getName()).append(", ");
 					if (field.getType().isPrimitive()) {
-						values += field.get(obj) + ", ";
+						values.append(field.get(obj)).append(", ");
 					} else {
-						values += "'"+field.get(obj)+"'" + ", ";
+						values.append("'").append(field.get(obj)).append("'").append(", ");
 					}
 				} else {
-					columns += field.getName() + ") "; 	
-					values += field.get(obj) + ");";
+					columns.append(field.getName()).append(") ");
+					values.append(field.get(obj)).append(");");
 				}
-			} 
-			sql += columns + values;
-			
+			}
+			sql += columns + values.toString();
+
 			PreparedStatement state = conn.prepareStatement(sql);
 			int rowsAffected = state.executeUpdate();
-			
+
 			if (rowsAffected == 1) {
 				conn.commit();
 			} else {
 				conn.rollback();
 			}
-			
+
 		} catch (Exception e) {
 			logger.log(e.toString());
-		} finally {
-			conn.close();
 		}
 	}
 
 	@Override
 	public void deleteObject(Object obj, String table) throws SQLException {
-		
-		Connection conn = connUtil.openConnection();
-		
-		try {
+
+		try (Connection conn = connUtil.openConnection()) {
 			Field[] fields = obj.getClass().getDeclaredFields();
 			String primaryKey = null;
 			int primaryKeyValue = 0;
-			
-			for (Field field: fields) {
+
+			for (Field field : fields) {
 				if (field.isAnnotationPresent(PrimaryKey.class)) {
 					primaryKey = field.getName();
 					primaryKeyValue = field.getInt(obj);
 				}
-			}	
-			String sql = "delete from "+ table +" where "+ primaryKey +"="+ primaryKeyValue +";";
-			PreparedStatement state = conn.prepareStatement(sql); 
+			}
+			String sql = "delete from " + table + " where " + primaryKey + "=" + primaryKeyValue + ";";
+			PreparedStatement state = conn.prepareStatement(sql);
 			state.execute();
-			
+
 		} catch (Exception e) {
 			logger.log(e.toString());
-		} finally {
-			conn.close();
 		}
 	}
 	
@@ -130,7 +119,7 @@ public class DAO <O> implements DataAccessObject<Object> {
 		
 		Connection conn = connUtil.openConnection();
 		
-		Class<? extends Object> clsObj = obj.getClass();
+		Class<?> clsObj = obj.getClass();
 		Field[] objFields = clsObj.getDeclaredFields();
 		Object fieldValue = null;
 		for (Field field: objFields) {
@@ -172,12 +161,10 @@ public class DAO <O> implements DataAccessObject<Object> {
 		String name = obj.getName();
 		Class<?> classObj = Class.forName(name);
 		Constructor[] constructors = classObj.getConstructors();
-		
-		Connection conn = connUtil.openConnection();
-		
-		try {
+
+		try (Connection conn = connUtil.openConnection()) {
 			Field[] fields = classObj.getDeclaredFields();
-			for (Field field: fields) {
+			for (Field field : fields) {
 				if (field.isAnnotationPresent(PrimaryKey.class)) {
 					primaryKey += field.getName();
 				}
@@ -185,26 +172,24 @@ public class DAO <O> implements DataAccessObject<Object> {
 			String sql = "Select * from " + table;
 			PreparedStatement state = conn.prepareStatement(sql);
 			ResultSet resultSet = state.executeQuery();
-			
+
 			while (resultSet.next()) {
-				for (Constructor<?> construct: constructors) {
+				for (Constructor<?> construct : constructors) {
 					if (construct.isAnnotationPresent(BasicConstructor.class)) {
 						Object temp = construct.newInstance();
-						Class<? extends Object> tempCls = temp.getClass();
-						
-						Field[] tempfields = tempCls.getDeclaredFields();
-						for (Field field: tempfields) {
+						Class<?> tempCls = temp.getClass();
+
+						Field[] tempFields = tempCls.getDeclaredFields();
+						for (Field field : tempFields) {
 							field.setAccessible(true);
-							field.set(temp, resultSet.getObject(field.getName()));	
+							field.set(temp, resultSet.getObject(field.getName()));
 						}
 						allRows.add(temp);
 					}
 				}
 			}
-		} catch(Exception e) {
-				logger.log(e.toString() + e.getStackTrace());
-		}finally {
-			conn.close();
+		} catch (Exception e) {
+			logger.log(e.toString() + Arrays.toString(e.getStackTrace()));
 		}
 		return allRows;
 	}
