@@ -49,4 +49,7 @@ public interface UserService {
      * @return the user with the ID, or null if the user doesn't exist
      */
     public User getUser(String id, User user) throws SQLException, IllegalAccessException;
+
+
+    public Message addMessage(Message msg) throws SQLException;
 }

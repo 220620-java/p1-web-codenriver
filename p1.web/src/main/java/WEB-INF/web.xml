@@ -14,6 +14,6 @@
 		
 		<servlet>
 			<servlet-name>Front</servlet-name>
-			<url-pattern>/</url-pattern>
+			<url-pattern>ghostpost/*</url-pattern>
 		</servlet>
 </web-app>

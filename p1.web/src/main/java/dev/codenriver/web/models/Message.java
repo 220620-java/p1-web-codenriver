@@ -9,7 +9,7 @@ public class Message {
 	@PrimaryKey
 	private int messageid;
 	private String postdate;
-	private String contents;
+	private String msg;
 	private int likes;
 	private int ownerid;
 
@@ -17,21 +17,21 @@ public class Message {
 	public Message() {
 		this.messageid = 0;
 		this.postdate = "";
-		this.contents = "";
+		this.msg = "";
 		this.likes = 0;
 	}
 	
-	Message(int id) {
+	public Message(int id) {
 		this.messageid = id;
 		this.postdate = "";
-		this.contents = "";
+		this.msg = "";
 		this.likes = 0;
 	}
 	
 	Message(int id, String date, String content, int likes, int userid) {
 		this.messageid = id;
 		this.postdate = date;
-		this.contents = content;
+		this.msg = content;
 		this.likes = likes;
 		this.ownerid = userid;
 	}
@@ -52,12 +52,12 @@ public class Message {
 		this.postdate = postdate;
 	}
 	
-	public String getContents() {
-		return contents;
+	public String getMsg() {
+		return msg;
 	}
 	
-	public void setContents(String contents) {
-		this.contents = contents;
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 	public int getLikes() {
@@ -79,7 +79,7 @@ public class Message {
 	@Override
 	public int hashCode() {
 		
-		return Objects.hash(messageid, postdate, contents, likes);
+		return Objects.hash(messageid, postdate, msg, likes);
 	}
 
 	@Override
@@ -91,12 +91,12 @@ public class Message {
 		if (getClass() != obj.getClass())
 			return false;
 		Message other = (Message) obj;
-		return Objects.equals(postdate, other.postdate) && messageid == other.messageid && likes == other.likes && Objects.equals(contents, other.contents);
+		return Objects.equals(postdate, other.postdate) && messageid == other.messageid && likes == other.likes && Objects.equals(msg, other.msg);
 	}
 
 	@Override
 	public String toString() {
-		return "Message [id=" + messageid + ", date=" + postdate + ", Post= " + contents + ", likes=" + likes + "]";
+		return "Message [id=" + messageid + ", date=" + postdate + ", Post= " + msg + ", likes=" + likes + "]";
 		
 	}
 }
