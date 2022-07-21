@@ -1,0 +1,25 @@
+2022-07-21T15:53:46.989667600 --- java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String)" because "conn" is null[Ljava.lang.StackTraceElement;@76be37e
+2022-07-21T15:56:11.544575100 --- java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String)" because "conn" is null[Ljava.lang.StackTraceElement;@2b1e8acf
+2022-07-21T15:58:46.387522700 --- org.postgresql.util.PSQLException: ERROR: relation "message" does not exist
+  Position: 15[Ljava.lang.StackTraceElement;@15c16a9c
+2022-07-21T16:05:14.122572200 --- java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String)" because "conn" is null[Ljava.lang.StackTraceElement;@286e5763
+2022-07-21T16:06:35.197954 --- java.lang.NullPointerException: Cannot invoke "java.sql.Connection.prepareStatement(String)" because "conn" is null[Ljava.lang.StackTraceElement;@7609da99
+2022-07-21T16:19:55.156292300 --- org.postgresql.util.PSQLException: ERROR: relation "message" does not exist
+  Position: 15[Ljava.lang.StackTraceElement;@2263a587
+2022-07-21T16:20:23.099955600 --- org.postgresql.util.PSQLException: ERROR: relation "message" does not exist
+  Position: 15[Ljava.lang.StackTraceElement;@375d2851
+2022-07-21T16:28:52.507190100 --- org.postgresql.util.PSQLException: ERROR: column "msgid" does not exist
+  Hint: Perhaps you meant to reference the column "messages.msg".
+  Position: 38
+2022-07-21T16:29:09.901150300 --- org.postgresql.util.PSQLException: ERROR: column "msgid" does not exist
+  Hint: Perhaps you meant to reference the column "messages.msg".
+  Position: 38
+2022-07-21T16:29:24.135282600 --- org.postgresql.util.PSQLException: ERROR: column "msgid" does not exist
+  Hint: Perhaps you meant to reference the column "messages.msg".
+  Position: 38
+2022-07-21T16:30:03.626160900 --- org.postgresql.util.PSQLException: ERROR: column "msgid" does not exist
+  Hint: Perhaps you meant to reference the column "messages.msg".
+  Position: 38
+2022-07-21T17:00:23.866643 --- org.postgresql.util.PSQLException: ERROR: column "msgid" does not exist
+  Hint: Perhaps you meant to reference the column "messages.msg".
+  Position: 38
